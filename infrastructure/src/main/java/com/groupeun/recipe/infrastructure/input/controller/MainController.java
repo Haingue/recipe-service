@@ -1,4 +1,4 @@
-package com.groupeun.recipe.infrastructure.input.dto.controller;
+package com.groupeun.recipe.infrastructure.input.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
