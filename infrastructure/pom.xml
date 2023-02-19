@@ -3,14 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>recipe-service</artifactId>
         <groupId>com.groupeun</groupId>
+        <artifactId>recipe</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>recipe-service_infrastructure</name>
+    <name>Recipe infrastructure</name>
     <description>Module to define the infrastructure of Recipe API on Spring Boot</description>
+    <groupId>com.groupeun.recipe</groupId>
     <artifactId>infrastructure</artifactId>
     <packaging>war</packaging>
 
@@ -42,7 +43,7 @@
     <dependencies>
         <!-- Domain dependency -->
         <dependency>
-            <groupId>com.groupeun</groupId>
+            <groupId>com.groupeun.recipe</groupId>
             <artifactId>domain</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
