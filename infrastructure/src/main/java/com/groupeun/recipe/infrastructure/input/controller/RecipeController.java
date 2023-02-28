@@ -4,6 +4,7 @@ import com.groupeun.recipe.application.ports.input.RecipeInputPort;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeDto;
 import com.groupeun.recipe.infrastructure.input.mapper.RecipeInputMapper;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class RecipeController {
     @Autowired
     private RecipeInputMapper recipeInputMapper;
 
+    @Timed(value="recipe.get.recipe",description="time to retrieve recipe",percentiles={0.5,0.9})
     @GetMapping
     public ResponseEntity<?> getRecipe (@PathParam("recipeId") String recipeId, @PathParam("nameLike") String nameLike) {
         if (recipeId != null) {
@@ -55,6 +57,7 @@ public class RecipeController {
         }
     }
 
+    @Timed(value="recipe.post.recipe",description="time to create recipe",percentiles={0.5,0.9})
     @PostMapping
     public ResponseEntity<RecipeDto> addRecipe (@RequestBody RecipeDto recipeDto, Authentication authentication) {
         logger.info("Add new recipe {}: {}", authentication.getName(), recipeDto.getName());
@@ -62,6 +65,7 @@ public class RecipeController {
         return new ResponseEntity(recipeInputMapper.modelToDto(recipe), HttpStatus.CREATED);
     }
 
+    @Timed(value="recipe.put.recipe",description="time to update recipe",percentiles={0.5,0.9})
     @PutMapping
     public ResponseEntity<RecipeDto> updateRecipe (@RequestBody RecipeDto recipeDto, Authentication authentication) {
         logger.info("Update recipe by {}: {}", authentication.getName(), recipeDto.getId());
@@ -69,6 +73,7 @@ public class RecipeController {
         return new ResponseEntity(recipeInputMapper.modelToDto(recipe), HttpStatus.CREATED);
     }
 
+    @Timed(value="recipe.delete.recipe",description="time to delete recipe",percentiles={0.5,0.9})
     @DeleteMapping
     public ResponseEntity deleteRecipeById (@RequestBody RecipeDto recipeDto, @RequestParam UUID id, Authentication authentication) {
         if (id == null) {
