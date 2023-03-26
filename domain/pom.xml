@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.groupeun</groupId>
-        <artifactId>recipe</artifactId>
+        <artifactId>order</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>Recipe domain</name>
     <description>Module to define the domain of Recipe API</description>
-    <groupId>com.groupeun.recipe</groupId>
+    <groupId>com.groupeun.order</groupId>
     <artifactId>domain</artifactId>
     <packaging>jar</packaging>
 
