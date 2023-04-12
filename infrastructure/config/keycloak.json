@@ -1,7 +1,7 @@
 {
     "realm": "cookeasy",
-    "auth-server-url": "http://localhost:8090",
-    "resource": "recipe-app",
+    "auth-server-url": "http://localhost:8090/auth",
+    "resource": "recipe-client",
     "public-client": true,
     "ssl-required": "external"
 }
