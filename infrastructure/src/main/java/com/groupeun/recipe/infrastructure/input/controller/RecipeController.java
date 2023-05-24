@@ -4,6 +4,7 @@ import com.groupeun.recipe.application.ports.input.RecipeInputPort;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeDto;
 import com.groupeun.recipe.infrastructure.input.mapper.RecipeInputMapper;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/services/recipe")
 public class RecipeController {
 
@@ -30,7 +31,8 @@ public class RecipeController {
     private RecipeInputMapper recipeInputMapper;
 
     @GetMapping
-    public ResponseEntity<?> getRecipe (@PathParam("recipeId") String recipeId, @PathParam("nameLike") String nameLike) {
+    public ResponseEntity<?> getRecipe (@PathParam("recipeId") @Parameter(name="Recipe Id", allowEmptyValue = true) String recipeId,
+                                        @PathParam("nameLike") String nameLike) {
         if (recipeId != null) {
             logger.info("Load one recipe: {}", recipeId);
             Recipe recipe = recipeInputPort.findOne(UUID.fromString(recipeId));

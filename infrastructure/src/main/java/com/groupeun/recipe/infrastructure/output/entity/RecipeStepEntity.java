@@ -19,7 +19,7 @@ public class RecipeStepEntity {
     @EmbeddedId
     private RecipeStepId id;
     @Column
-    private Integer stepNumber;
+    private int stepNumber;
     @Column
     private String description;
 
