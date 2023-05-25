@@ -2,6 +2,7 @@ package com.groupeun.recipe.infrastructure.output.entity.id;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,8 +12,10 @@ import java.util.UUID;
 @Embeddable
 public class IngredientEntityId implements Serializable {
 
-    private UUID recipeId;
-    private UUID ingredientId;
+    @Column
+    private String recipeId;
+    @Column
+    private String ingredientId;
 
     @Override
     public boolean equals(Object o) {

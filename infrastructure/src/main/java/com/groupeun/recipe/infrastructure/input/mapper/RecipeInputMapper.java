@@ -1,7 +1,6 @@
 package com.groupeun.recipe.infrastructure.input.mapper;
 
 import com.groupeun.recipe.domain.model.Recipe;
-import com.groupeun.recipe.domain.model.RecipeStep;
 import com.groupeun.recipe.infrastructure.input.dto.IngredientDto;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeDto;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeStepDto;

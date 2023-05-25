@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecipeStepOutputMapper {
 
-    public RecipeStepEntity modelToEntity (RecipeStep model) {
+    public static RecipeStepEntity modelToEntity (RecipeStep model) {
         RecipeStepEntityId id = new RecipeStepEntityId();
         id.setStepNumber(model.getStepNumber());
 
@@ -18,7 +18,7 @@ public class RecipeStepOutputMapper {
         return entity;
     }
 
-    public RecipeStep entityToModel (RecipeStepEntity entity) {
+    public static RecipeStep entityToModel (RecipeStepEntity entity) {
         RecipeStep model = new RecipeStep();
         model.setStepNumber(model.getStepNumber());
         model.setDescription(entity.getDescription());
