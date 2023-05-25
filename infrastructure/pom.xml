@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <name>Recipe infrastructure</name>
+    <description>Module to define the infrastructure of Recipe API on Spring Boot</description>
+    <artifactId>infrastructure</artifactId>
+    <packaging>war</packaging>
+
     <parent>
         <groupId>com.groupeun</groupId>
         <artifactId>recipe</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <name>Recipe infrastructure</name>
-    <description>Module to define the infrastructure of Recipe API on Spring Boot</description>
-    <groupId>com.groupeun.recipe</groupId>
-    <artifactId>infrastructure</artifactId>
-    <packaging>war</packaging>
 
     <properties>
         <spring-boot.version>2.7.2</spring-boot.version>
@@ -43,9 +43,9 @@
     <dependencies>
         <!-- Domain dependency -->
         <dependency>
-            <groupId>com.groupeun.recipe</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Web dependencies -->
@@ -163,6 +163,7 @@
                     <profiles>
                         <profile>${spring.profiles.active}</profile>
                     </profiles>
+                    <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7086</jvmArguments>
                 </configuration>
             </plugin>
             <plugin>

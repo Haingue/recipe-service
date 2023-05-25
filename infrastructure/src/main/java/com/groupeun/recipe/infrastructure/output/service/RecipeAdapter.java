@@ -25,77 +25,63 @@ public class RecipeAdapter implements RecipeOutputPort {
 
     @Autowired
     private RecipeRepository recipeRepository;
-    @Autowired
-    private RecipeOutputMapper recipeOutputMapper;
-    @Autowired
-    private RecipeStepOutputMapper recipeStepOutputMapper;
 
     @Override
     public Optional<Recipe> findOne(UUID id) {
-        Optional<RecipeEntity> entity = recipeRepository.findById(id);
+        Optional<RecipeEntity> entity = recipeRepository.findById(id.toString());
         if (entity.isPresent())
-            return entity.map(recipeOutputMapper::entityToModel);
+            return entity.map(RecipeOutputMapper::entityToModel);
         return Optional.empty();
     }
 
     @Override
     public List<Recipe> findAll() {
         return StreamSupport.stream(recipeRepository.findAll().spliterator(), false)
-                .map(recipeOutputMapper::entityToModel).collect(Collectors.toList());
+                .map(RecipeOutputMapper::entityToModel).collect(Collectors.toList());
     }
 
     @Override
     public List<Recipe> findAllByNameRegex(String nameRegex) {
         return StreamSupport.stream(recipeRepository.findAllByNameLikeOrderByName(nameRegex).spliterator(), false)
-                .map(recipeOutputMapper::entityToModel).collect(Collectors.toList());
+                .map(RecipeOutputMapper::entityToModel).collect(Collectors.toList());
     }
 
     @Override
     public List<Recipe> search(String nameRegex, int preparationTime) {
         return StreamSupport.stream(recipeRepository.findAllByNameLikeOrPreparationTimeOrderByNameAscPreparationTimeAsc(nameRegex, preparationTime).spliterator(), false)
-                .map(recipeOutputMapper::entityToModel).collect(Collectors.toList());
+                .map(RecipeOutputMapper::entityToModel).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public Optional<Recipe> create(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
+    public Optional<Recipe> create(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId) {
         RecipeEntity recipEntity = new RecipeEntity();
-        recipEntity.setId(id);
+        recipEntity.setId(id.toString());
         recipEntity.setName(name);
         recipEntity.setDescription(description);
         recipEntity.setNutritionalScore(nutritionalScore);
         recipEntity.setPreparationTime(preparationTime);
-        recipEntity.setAuthorId(authorId);
-        for (RecipeStep step : steps) {
-            RecipeStepEntity stepEntity = recipeStepOutputMapper.modelToEntity(step);
-            stepEntity.getId().setRecipeId(recipEntity.getId());
-            recipEntity.getSteps().add(stepEntity);
-        }
+        recipEntity.setAuthorId(authorId.toString());
         recipEntity = recipeRepository.save(recipEntity);
-        return Optional.of(recipeOutputMapper.entityToModel(recipEntity));
+        return Optional.of(RecipeOutputMapper.entityToModel(recipEntity));
     }
 
     @Override
     @Transactional
-    public Optional<Recipe> update(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
-        RecipeEntity recipeEntity = recipeRepository.findById(id)
+    public Optional<Recipe> update(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId) {
+        RecipeEntity recipeEntity = recipeRepository.findById(id.toString())
                 .orElseThrow(() -> new RecipeNotFound(id));
         recipeEntity.setName(name);
         recipeEntity.setDescription(description);
         recipeEntity.setNutritionalScore(nutritionalScore);
         recipeEntity.setPreparationTime(preparationTime);
-        for (RecipeStep step : steps) {
-            RecipeStepEntity stepEntity = recipeStepOutputMapper.modelToEntity(step);
-            stepEntity.getId().setRecipeId(recipeEntity.getId());
-            recipeEntity.getSteps().add(stepEntity);
-        }
         recipeEntity = recipeRepository.save(recipeEntity);
-        return Optional.of(recipeOutputMapper.entityToModel(recipeEntity));
+        return Optional.of(RecipeOutputMapper.entityToModel(recipeEntity));
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
-        recipeRepository.deleteById(id);
+        recipeRepository.deleteById(id.toString());
     }
 }

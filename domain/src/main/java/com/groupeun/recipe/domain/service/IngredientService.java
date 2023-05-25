@@ -1,34 +1,50 @@
 package com.groupeun.recipe.domain.service;
 
 import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
+import com.groupeun.recipe.domain.exception.IngredientsNotExist;
 import com.groupeun.recipe.domain.model.Ingredient;
-import com.groupeun.recipe.domain.model.IngredientDetails;
-import com.groupeun.recipe.domain.model.Recipe;
-import com.groupeun.recipe.domain.model.RecipeStep;
+import com.groupeun.recipe.domain.model.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
 public class IngredientService {
 
-    IngredientOutputPort ingredientOutputPort;
+    private ProductService productService;
+    private IngredientOutputPort ingredientOutputPort;
 
-    public boolean checkIngredientExist (Set<UUID> ingredientIdList) {
-        if (ingredientIdList.isEmpty()) return true;
-        Set<IngredientDetails> ingredients = ingredientOutputPort.getIngredientDetails(ingredientIdList);
-        return ingredientIdList.size() == ingredients.size();
+    public Set<Ingredient> findAllIngredientByRecipeId (UUID recipeId) {
+        return ingredientOutputPort.findAllProductByRecipe(recipeId);
     }
 
-    public Set<IngredientDetails> loadIngredientDetails (Set<UUID> ingredientIdList) {
-        if (ingredientIdList.isEmpty()) return Collections.emptySet();
-        Set<IngredientDetails> ingredients = ingredientOutputPort.getIngredientDetails(ingredientIdList);
+    public Set<Ingredient> updateIngredientList(UUID recipeId, Set<Ingredient> ingredients) {
+        if (Setting.CHECK_INGREDIENT.getValue().equalsIgnoreCase("true")) {
+            boolean allIngredientExist = productService.checkIngredientExist(
+                    ingredients.stream().map(Ingredient::getId).collect(Collectors.toSet()));
+            if (!allIngredientExist) throw new IngredientsNotExist();
+        }
+
+        Set<Ingredient> existingIngredient = this.findAllIngredientByRecipeId(recipeId);
+        for (Ingredient ingredient : ingredients) {
+            existingIngredient.remove(ingredient);
+            ingredientOutputPort.save(recipeId, ingredient.getId(), ingredient.getQuantity());
+        }
+        existingIngredient.forEach(oldIngredient -> ingredientOutputPort.delete(recipeId, oldIngredient.getId()));
         return ingredients;
+    }
+
+    public boolean ingredientIsValid (Ingredient ingredient) {
+        return ingredient.getId() != null && ingredient.getQuantity() > 0;
+    }
+
+    public boolean ingredientsAreValid (Set<Ingredient> ingredients) {
+        Predicate<Ingredient> ingredientIsValid = this::ingredientIsValid;
+        return !ingredients.stream().anyMatch(ingredientIsValid.negate());
     }
 }

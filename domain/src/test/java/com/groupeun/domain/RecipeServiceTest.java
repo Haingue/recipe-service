@@ -1,70 +1,89 @@
 package com.groupeun.domain;
 
-import com.groupeun.application.output.implement.RecipeOutputPortImplement;
+import com.groupeun.application.output.implement.*;
+import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
 import com.groupeun.recipe.application.ports.output.RecipeOutputPort;
+import com.groupeun.recipe.application.ports.output.RecipeStepOutputPort;
 import com.groupeun.recipe.domain.exception.RecipeIdAlreadyUsed;
+import com.groupeun.recipe.domain.model.Ingredient;
+import com.groupeun.recipe.domain.model.Product;
 import com.groupeun.recipe.domain.model.Recipe;
+import com.groupeun.recipe.domain.model.RecipeStep;
+import com.groupeun.recipe.domain.service.IngredientService;
+import com.groupeun.recipe.domain.service.ProductService;
+import com.groupeun.recipe.domain.service.RecipeService;
+import com.groupeun.recipe.domain.service.RecipeStepService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class RecipeServiceTest {
 
-    RecipeOutputPort recipeOutputPort = RecipeOutputPortImplement.getInstance();
+    private RecipeService recipeService = OutputUtils.recipeService;
 
-    @BeforeEach
-    public void prepareTest () {
-        Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.findAll()
-                    .forEach(recipe -> recipeOutputPort.delete(recipe.getId()));
-        });
+    @BeforeAll
+    public static void prepareTest () {
+        OutputUtils.initializeOutputPortImplement();
     }
 
     @Test
     public void testInsert () {
-        UUID firstId = UUID.randomUUID();
         UUID authorId = UUID.randomUUID();
         Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.create(firstId, "Test", "Description test", 5D,
-                    10, authorId, new HashSet<>());
+            recipeService.create("Test", "Description test", 5D,
+                    10, authorId, OutputUtils.createIngredientList(3), OutputUtils.createRecipeStepList(2));
         }, "Error to create new Recipe");
+        Recipe createdRecipe = RecipeOutputPortImplement.getStore()
+                .values().stream()
+                .filter(recipe -> recipe.getAuthorId().equals(authorId))
+                .findFirst().get();
+
         Assertions.assertDoesNotThrow(() -> {
-            Optional<Recipe> firstRecipe = recipeOutputPort.findOne(firstId);
-            Assertions.assertTrue(firstRecipe.isPresent());
-            Assertions.assertEquals(firstRecipe.get().getName(), "Test");
-            Assertions.assertEquals(firstRecipe.get().getDescription(), "Description test");
-            Assertions.assertEquals(firstRecipe.get().getNutritionalScore(), 5D);
-            Assertions.assertEquals(firstRecipe.get().getPreparationTime(), 10);
-            Assertions.assertEquals(firstRecipe.get().getAuthorId(), authorId);
+            Recipe firstRecipe = recipeService.findOne(createdRecipe.getId());
+            Assertions.assertNotNull(firstRecipe);
+            Assertions.assertEquals(firstRecipe.getName(), "Test");
+            Assertions.assertEquals(firstRecipe.getDescription(), "Description test");
+            Assertions.assertEquals(firstRecipe.getNutritionalScore(), 5D);
+            Assertions.assertEquals(firstRecipe.getPreparationTime(), 10);
+            Assertions.assertEquals(firstRecipe.getAuthorId(), authorId);
+
+            Assertions.assertTrue(firstRecipe.getSteps().stream()
+                    .allMatch(step -> RecipeStepOutputPortImplement.getStore().values().stream()
+                            .anyMatch(steps -> steps.contains(step))));
+            Assertions.assertTrue(firstRecipe.getIngredients().stream()
+                    .allMatch(step -> IngredientOutputPortImplement.getStore().values().stream()
+                            .anyMatch(ingredients -> ingredients.contains(step))));
         }, "Error to find recipe by id");
-        Assertions.assertThrows(RecipeIdAlreadyUsed.class, () -> {
-            recipeOutputPort.create(firstId, "Test", "Description test", 5D,
-                    10, authorId, new HashSet<>());
-        }, "Error to create duplicated Recipe, RecipeIdAlreadyUsed expected");
     }
 
     @Test
     public void testUpdate () {
-        UUID firstId = UUID.randomUUID();
         UUID authorId = UUID.randomUUID();
         Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.create(firstId, "Test 1", "Description test", 5D,
-                    10, authorId, new HashSet<>());
+            recipeService.create("Test 1", "Description test", 5D,
+                    10, authorId, OutputUtils.createIngredientList(3), OutputUtils.createRecipeStepList(2));
         }, "Error to create new Recipe");
+        Recipe createdRecipe = RecipeOutputPortImplement.getStore()
+                .values().stream()
+                .filter(recipe -> recipe.getAuthorId().equals(authorId))
+                .findFirst().get();
+
         Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.update(firstId, "Test 2", null, 2D,
-                    5, authorId, new HashSet<>());
-            Optional<Recipe> firstRecipe = recipeOutputPort.findOne(firstId);
-            Assertions.assertTrue(firstRecipe.isPresent());
-            Assertions.assertEquals(firstRecipe.get().getName(), "Test 2");
-            Assertions.assertNull(firstRecipe.get().getDescription());
-            Assertions.assertEquals(firstRecipe.get().getNutritionalScore(), 2D);
-            Assertions.assertEquals(firstRecipe.get().getPreparationTime(), 5);
-            Assertions.assertEquals(firstRecipe.get().getAuthorId(), authorId);
+            recipeService.update(createdRecipe.getId(), "Test 2", null, 2D,
+                    5, authorId, OutputUtils.createIngredientList(2), OutputUtils.createRecipeStepList(3));
+            Recipe firstRecipe = recipeService.findOne(createdRecipe.getId());
+            Assertions.assertNull(firstRecipe);
+            Assertions.assertEquals(firstRecipe.getName(), "Test 2");
+            Assertions.assertNull(firstRecipe.getDescription());
+            Assertions.assertEquals(firstRecipe.getNutritionalScore(), 2D);
+            Assertions.assertEquals(firstRecipe.getPreparationTime(), 5);
+            Assertions.assertEquals(firstRecipe.getAuthorId(), authorId);
         }, "Error to update recipe");
     }
 
@@ -73,13 +92,13 @@ public class RecipeServiceTest {
         UUID firstId = UUID.randomUUID();
         UUID authorId = UUID.randomUUID();
         Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.create(firstId, "Test", "Description test", 5D,
-                    10, authorId, new HashSet<>());
+            recipeService.create("Test", "Description test", 5D,
+                    10, authorId, OutputUtils.createIngredientList(1), OutputUtils.createRecipeStepList(2));
         }, "Error to create new Recipe");
         Assertions.assertDoesNotThrow(() -> {
-            recipeOutputPort.delete(firstId);
-            Optional<Recipe> firstRecipe = recipeOutputPort.findOne(firstId);
-            Assertions.assertFalse(firstRecipe.isPresent());
+            recipeService.delete(firstId);
+            Recipe firstRecipe = recipeService.findOne(firstId);
+            Assertions.assertNotNull(firstRecipe);
         }, "Error to delete recipe by id");
     }
 }

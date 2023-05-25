@@ -4,6 +4,7 @@ import com.groupeun.recipe.infrastructure.output.entity.id.IngredientEntityId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,11 +13,12 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "ingredient")
+@Table(name = "recipe_ingredient")
 public class IngredientEntity {
 
     @EmbeddedId
     private IngredientEntityId id;
+    @Column
     private int quantity;
 
     @Override

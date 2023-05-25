@@ -1,5 +1,6 @@
 package com.groupeun.application.output.implement;
 
+import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
 import com.groupeun.recipe.application.ports.output.RecipeOutputPort;
 import com.groupeun.recipe.domain.exception.RecipeIdAlreadyUsed;
 import com.groupeun.recipe.domain.exception.RecipeNotFound;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 public class RecipeOutputPortImplement implements RecipeOutputPort {
 
     private static RecipeOutputPortImplement instance = new RecipeOutputPortImplement();
-    private HashMap<UUID, Recipe> store;
+    private static HashMap<UUID, Recipe> store;
 
     private RecipeOutputPortImplement() {
         super();
@@ -21,6 +22,9 @@ public class RecipeOutputPortImplement implements RecipeOutputPort {
 
     public static RecipeOutputPort getInstance () {
         return RecipeOutputPortImplement.instance;
+    }
+    public static HashMap<UUID, Recipe> getStore () {
+        return RecipeOutputPortImplement.store;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class RecipeOutputPortImplement implements RecipeOutputPort {
     }
 
     @Override
-    public Optional<Recipe> create(UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
+    public Optional<Recipe> create(UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId) {
         if (store.containsKey(id)) throw new RecipeIdAlreadyUsed(id);
         Recipe newRecipe = new Recipe();
         newRecipe.setId(id);
@@ -59,20 +63,18 @@ public class RecipeOutputPortImplement implements RecipeOutputPort {
         newRecipe.setNutritionalScore(nutritionalScore);
         newRecipe.setPreparationTime(preparationTime);
         newRecipe.setAuthorId(authorId);
-        newRecipe.setSteps(steps);
         store.put(id, newRecipe);
         return Optional.of(newRecipe);
     }
 
     @Override
-    public Optional<Recipe> update(UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
+    public Optional<Recipe> update(UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId) {
         Recipe existingRecipe = store.get(id);
         existingRecipe.setName(name);
         existingRecipe.setDescription(description);
         existingRecipe.setNutritionalScore(nutritionalScore);
         existingRecipe.setPreparationTime(preparationTime);
         existingRecipe.setAuthorId(authorId);
-        existingRecipe.setSteps(steps);
         store.put(id, existingRecipe);
         return Optional.of(existingRecipe);
     }

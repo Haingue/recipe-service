@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface RecipeRepository extends CrudRepository<RecipeEntity, UUID> {
+public interface RecipeRepository extends CrudRepository<RecipeEntity, String> {
 
     List<RecipeEntity> findAllByNameLikeOrderByName (String nameLike);
     List<RecipeEntity> findAllByNameLikeOrPreparationTimeOrderByNameAscPreparationTimeAsc (String nameLike, int preparationTime);

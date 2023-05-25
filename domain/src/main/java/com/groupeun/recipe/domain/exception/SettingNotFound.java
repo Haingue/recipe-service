@@ -1,7 +1,5 @@
 package com.groupeun.recipe.domain.exception;
 
-import java.util.UUID;
-
 public class SettingNotFound extends DomainException {
     public SettingNotFound() {
         super("Setting not found");

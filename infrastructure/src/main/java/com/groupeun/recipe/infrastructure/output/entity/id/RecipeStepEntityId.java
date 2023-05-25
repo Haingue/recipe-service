@@ -11,7 +11,7 @@ import java.util.UUID;
 @Embeddable
 public class RecipeStepEntityId implements Serializable {
 
-    private UUID recipeId;
+    private String recipeId;
     private int stepNumber;
 
     @Override

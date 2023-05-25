@@ -1,6 +1,5 @@
 package com.groupeun.recipe.infrastructure.output.entity;
 
-import com.groupeun.recipe.domain.model.Ingredient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +16,7 @@ import java.util.UUID;
 public class RecipeEntity {
 
     @Id
-    private UUID id;
+    private String id;
     @Column
     private String name;
     @Column
@@ -27,12 +26,7 @@ public class RecipeEntity {
     @Column
     private int preparationTime;
     @Column
-    private UUID authorId;
-
-    @OneToMany(mappedBy = "id.recipeId", cascade = CascadeType.ALL)
-    private Set<IngredientEntity> ingredients = new HashSet<>();
-    @OneToMany(mappedBy = "id.recipeId", cascade = CascadeType.ALL)
-    private Set<RecipeStepEntity> steps = new HashSet<>();
+    private String authorId;
 
     @Override
     public boolean equals(Object o) {
