@@ -1,45 +1,24 @@
 package com.groupeun.recipe.infrastructure.output.entity.id;
 
+import lombok.Data;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Data
 @Embeddable
-public class RecipeStepId implements Serializable {
+public class IngredientEntityId implements Serializable {
 
     private UUID recipeId;
     private UUID ingredientId;
-
-    public RecipeStepId() {
-    }
-
-    public RecipeStepId(UUID recipeId, UUID ingredientId) {
-        this.recipeId = recipeId;
-        this.ingredientId = ingredientId;
-    }
-
-    public UUID getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(UUID recipeId) {
-        this.recipeId = recipeId;
-    }
-
-    public UUID getIngredientId() {
-        return ingredientId;
-    }
-
-    public void setIngredientId(UUID ingredientId) {
-        this.ingredientId = ingredientId;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RecipeStepId recipeStepId = (RecipeStepId) o;
+        IngredientEntityId recipeStepId = (IngredientEntityId) o;
         return recipeId.equals(recipeStepId.recipeId) && ingredientId.equals(recipeStepId.ingredientId);
     }
 

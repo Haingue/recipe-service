@@ -1,6 +1,8 @@
 package com.groupeun.recipe.infrastructure.output.mapper;
 
+import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
+import com.groupeun.recipe.infrastructure.output.entity.IngredientEntity;
 import com.groupeun.recipe.infrastructure.output.entity.RecipeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,11 @@ public class RecipeOutputMapper {
         entity.setNutritionalScore(model.getNutritionalScore());
         entity.setPreparationTime(model.getPreparationTime());
         entity.setAuthorId(model.getAuthorId());
+
+        model.getIngredients().stream()
+                .map((Ingredient ingredient) -> IngredientOutputMapper.modelToEntity(model.getId(), ingredient))
+                .forEach(entity.getIngredients()::add);
+
         entity.getSteps()
                 .addAll(model.getSteps().stream().map(recipeStepOutputMapper::modelToEntity).collect(Collectors.toList()));
         return entity;
@@ -34,6 +41,11 @@ public class RecipeOutputMapper {
         model.setNutritionalScore(entity.getNutritionalScore());
         model.setPreparationTime(entity.getPreparationTime());
         model.setAuthorId(entity.getAuthorId());
+
+        entity.getIngredients()
+                .stream().map(IngredientOutputMapper::entityToModel)
+                .forEach(model::addIngredient);
+
         model.getSteps()
                 .addAll(entity.getSteps().stream().map(recipeStepOutputMapper::entityToModel).collect(Collectors.toList()));
         return model;

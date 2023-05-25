@@ -14,5 +14,6 @@ public class RecipeDto {
     private double nutritionalScore;
     private int preparationTime;
     private UUID authorId;
+    private Set<IngredientDto> ingredients = new HashSet<>();
     private Set<RecipeStepDto> steps = new HashSet<>();
 }

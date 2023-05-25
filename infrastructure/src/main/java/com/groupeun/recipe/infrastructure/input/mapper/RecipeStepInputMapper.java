@@ -9,8 +9,6 @@ public class RecipeStepInputMapper {
     
     public RecipeStepDto modelToDto (RecipeStep model) {
         RecipeStepDto dto = new RecipeStepDto();
-        dto.setRecipeId(model.getRecipeId());
-        dto.setIngredientId(model.getIngredientId());
         dto.setStepNumber(model.getStepNumber());
         dto.setDescription(model.getDescription());
         return dto;
@@ -18,8 +16,6 @@ public class RecipeStepInputMapper {
 
     public RecipeStep dtoToModel (RecipeStepDto dto) {
         RecipeStep model = new RecipeStep();
-        model.setRecipeId(dto.getRecipeId());
-        model.setIngredientId(dto.getIngredientId());
         model.setStepNumber(dto.getStepNumber());
         model.setDescription(dto.getDescription());
         return model;

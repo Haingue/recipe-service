@@ -5,6 +5,7 @@ import com.groupeun.recipe.application.ports.output.RecipeOutputPort;
 import com.groupeun.recipe.domain.exception.DomainException;
 import com.groupeun.recipe.domain.exception.IngredientsNotExist;
 import com.groupeun.recipe.domain.exception.RecipeNotFound;
+import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
 import com.groupeun.recipe.domain.model.Setting;
@@ -14,6 +15,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -46,13 +48,15 @@ public class RecipeService implements RecipeInputPort {
     @Override
     public Recipe create(Recipe recipe) {
         return this.create(recipe.getName(), recipe.getDescription(), recipe.getNutritionalScore(),
-                recipe.getPreparationTime(), recipe.getAuthorId(), recipe.getSteps());
+                recipe.getPreparationTime(), recipe.getAuthorId(), recipe.getIngredients(), recipe.getSteps());
     }
 
     @Override
-    public Recipe create(String name, String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
+    public Recipe create(String name, String description, double nutritionalScore, int preparationTime, UUID authorId,
+                         Set<Ingredient> ingredients, Set<RecipeStep> steps) {
         if (Setting.CHECK_INGREDIENT.getValue().equalsIgnoreCase("true")) {
-            boolean allIngredientExist = ingredientService.checkIngredientExist(steps);
+            boolean allIngredientExist = ingredientService.checkIngredientExist(
+                    ingredients.stream().map(Ingredient::getId).collect(Collectors.toSet()));
             if (!allIngredientExist) throw new IngredientsNotExist();
         }
         // TODO Check if there is a recipe with [name, author]
@@ -65,14 +69,16 @@ public class RecipeService implements RecipeInputPort {
     public Recipe update(Recipe recipe) {
         return this.update(recipe.getId(), recipe.getName(), recipe.getDescription(),
                 recipe.getNutritionalScore(), recipe.getPreparationTime(),
-                recipe.getAuthorId(), recipe.getSteps());
+                recipe.getAuthorId(), recipe.getIngredients(), recipe.getSteps());
     }
 
     @Override
-    public Recipe update(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps) {
+    public Recipe update(UUID id, String name, String description, double nutritionalScore, int preparationTime, UUID authorId,
+                         Set<Ingredient> ingredients, Set<RecipeStep> steps) {
         if (recipeOutputPort.findOne(id).isPresent()) throw new RecipeNotFound(id);
         if (Setting.CHECK_INGREDIENT.getValue().equalsIgnoreCase("true")) {
-            boolean allIngredientExist = ingredientService.checkIngredientExist(steps);
+            boolean allIngredientExist = ingredientService.checkIngredientExist(
+                    ingredients.stream().map(Ingredient::getId).collect(Collectors.toSet()));
             if (!allIngredientExist) throw new IngredientsNotExist();
         }
         return recipeOutputPort.update(id, name, description, nutritionalScore, preparationTime, authorId, steps)

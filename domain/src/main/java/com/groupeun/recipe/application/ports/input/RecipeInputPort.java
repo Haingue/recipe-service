@@ -1,5 +1,6 @@
 package com.groupeun.recipe.application.ports.input;
 
+import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
 
@@ -15,9 +16,9 @@ public interface RecipeInputPort {
     List<Recipe> search (String nameRegex, int preparationTime);
 
     Recipe create (Recipe recipe);
-    Recipe create (String name,String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps);
+    Recipe create (String name, String description, double nutritionalScore, int preparationTime, UUID authorId, Set<Ingredient> ingredients, Set<RecipeStep> steps);
     Recipe update (Recipe recipe);
-    Recipe update (UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId, Set<RecipeStep> steps);
+    Recipe update (UUID id, String name,String description, double nutritionalScore, int preparationTime, UUID authorId, Set<Ingredient> ingredients, Set<RecipeStep> steps);
 
     void delete (Recipe recipe);
     void delete (UUID id);

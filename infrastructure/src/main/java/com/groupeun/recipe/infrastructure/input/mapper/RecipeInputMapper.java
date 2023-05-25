@@ -2,6 +2,7 @@ package com.groupeun.recipe.infrastructure.input.mapper;
 
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
+import com.groupeun.recipe.infrastructure.input.dto.IngredientDto;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeDto;
 import com.groupeun.recipe.infrastructure.input.dto.RecipeStepDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,10 @@ public class RecipeInputMapper {
         dto.setNutritionalScore(model.getNutritionalScore());
         dto.setPreparationTime(model.getPreparationTime());
         dto.setAuthorId(model.getAuthorId());
-        for (RecipeStep stepModel : model.getSteps()) {
-            dto.getSteps().add(recipeStepInputMapper.modelToDto(stepModel));
-        }
+        model.getIngredients().stream().map(IngredientInputMapper::modelToDto)
+                .forEach(dto.getIngredients()::add);
+        model.getSteps().stream().map(recipeStepInputMapper::modelToDto)
+                .forEach(dto.getSteps()::add);
         return dto;
     }
 
@@ -35,6 +37,9 @@ public class RecipeInputMapper {
         model.setNutritionalScore(dto.getNutritionalScore());
         model.setPreparationTime(dto.getPreparationTime());
         model.setAuthorId(dto.getAuthorId());
+        for (IngredientDto ingredientDto : dto.getIngredients()) {
+            model.addIngredient(IngredientInputMapper.dtoToModel(ingredientDto));
+        }
         for (RecipeStepDto stepDto : dto.getSteps()) {
             model.getSteps().add(recipeStepInputMapper.dtoToModel(stepDto));
         }

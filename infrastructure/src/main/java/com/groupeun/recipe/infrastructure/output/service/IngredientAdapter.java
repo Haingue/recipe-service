@@ -3,6 +3,7 @@ package com.groupeun.recipe.infrastructure.output.service;
 import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
 import com.groupeun.recipe.domain.exception.DomainException;
 import com.groupeun.recipe.domain.model.Ingredient;
+import com.groupeun.recipe.domain.model.IngredientDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -38,18 +41,18 @@ public class IngredientAdapter implements IngredientOutputPort {
     }
 
     @Override
-    public List<Ingredient> getIngredientDetails(List<UUID> ingredientIds) {
+    public Set<IngredientDetails> getIngredientDetails(Set<UUID> ingredientIds) {
         logger.debug("Fetch product api: {}", ingredientIds);
-        ResponseEntity<List<Ingredient>> response = client
+        ResponseEntity<List<IngredientDetails>> response = client
                 .post()
                 .uri("/product/details")
                 .header(HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION))
                 .body(BodyInserters.fromValue(ingredientIds))
                 .retrieve()
-                .toEntityList(Ingredient.class)
+                .toEntityList(IngredientDetails.class)
                 .block();
         if (response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
+            return new HashSet<>(response.getBody());
         }
         throw new DomainException(String.format("Error to collect ingredient details (http code: %s)", response.getStatusCode().value()));
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -26,7 +27,7 @@ public class OpenApiConfiguration {
                                                 .bearerFormat("JWT")
                                 )
                 )
-                .security(List.of(new SecurityRequirement().addList(securitySchemeName)))
+                .security(Collections.singletonList(new SecurityRequirement().addList(securitySchemeName)))
                 .info(new Info().title(serviceTitle).version(serviceVersion));
     }
 }

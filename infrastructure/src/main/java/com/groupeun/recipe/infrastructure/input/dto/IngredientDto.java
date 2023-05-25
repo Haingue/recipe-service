@@ -1,4 +1,4 @@
-package com.groupeun.recipe.domain.model;
+package com.groupeun.recipe.infrastructure.input.dto;
 
 import lombok.Data;
 
@@ -7,10 +7,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class Ingredient {
+public class IngredientDto {
 
     private UUID id;
     private int quantity;
-    private IngredientDetails details;
-
 }

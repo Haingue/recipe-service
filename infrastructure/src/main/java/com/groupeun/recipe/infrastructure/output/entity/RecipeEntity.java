@@ -1,5 +1,6 @@
 package com.groupeun.recipe.infrastructure.output.entity;
 
+import com.groupeun.recipe.domain.model.Ingredient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,8 @@ public class RecipeEntity {
     @Column
     private UUID authorId;
 
+    @OneToMany(mappedBy = "id.recipeId", cascade = CascadeType.ALL)
+    private Set<IngredientEntity> ingredients = new HashSet<>();
     @OneToMany(mappedBy = "id.recipeId", cascade = CascadeType.ALL)
     private Set<RecipeStepEntity> steps = new HashSet<>();
 
