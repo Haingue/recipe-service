@@ -28,6 +28,7 @@ public class IngredientOutputPortImplement implements IngredientOutputPort {
 
     @Override
     public Set<Ingredient> findAllProductByRecipe(UUID recipeId) {
+        if (!store.containsKey(recipeId)) store.put(recipeId, new HashSet<>());
         return store.get(recipeId);
     }
 

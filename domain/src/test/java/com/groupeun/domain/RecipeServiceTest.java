@@ -4,6 +4,7 @@ import com.groupeun.application.output.implement.IngredientOutputPortImplement;
 import com.groupeun.application.output.implement.OutputUtils;
 import com.groupeun.application.output.implement.RecipeOutputPortImplement;
 import com.groupeun.application.output.implement.RecipeStepOutputPortImplement;
+import com.groupeun.recipe.domain.exception.RecipeNotFound;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.service.RecipeService;
 import org.junit.jupiter.api.Assertions;
@@ -67,7 +68,7 @@ public class RecipeServiceTest {
             recipeService.update(createdRecipe.getId(), "Test 2", null, 2D,
                     5, authorId, OutputUtils.createIngredientList(2), OutputUtils.createRecipeStepList(3));
             Recipe firstRecipe = recipeService.findOne(createdRecipe.getId());
-            Assertions.assertNull(firstRecipe);
+            Assertions.assertNotNull(firstRecipe);
             Assertions.assertEquals(firstRecipe.getName(), "Test 2");
             Assertions.assertNull(firstRecipe.getDescription());
             Assertions.assertEquals(firstRecipe.getNutritionalScore(), 2D);
@@ -78,16 +79,22 @@ public class RecipeServiceTest {
 
     @Test
     public void testDelete () {
-        UUID firstId = UUID.randomUUID();
         UUID authorId = UUID.randomUUID();
         Assertions.assertDoesNotThrow(() -> {
             recipeService.create("Test", "Description test", 5D,
                     10, authorId, OutputUtils.createIngredientList(1), OutputUtils.createRecipeStepList(2));
         }, "Error to create new Recipe");
+        Recipe createdRecipe = RecipeOutputPortImplement.getStore()
+                .values().stream()
+                .filter(recipe -> recipe.getAuthorId().equals(authorId))
+                .findFirst().get();
+
         Assertions.assertDoesNotThrow(() -> {
-            recipeService.delete(firstId);
-            Recipe firstRecipe = recipeService.findOne(firstId);
-            Assertions.assertNotNull(firstRecipe);
+            recipeService.delete(createdRecipe.getId());
+            Assertions.assertThrows(RecipeNotFound.class, () -> {
+                Recipe firstRecipe = recipeService.findOne(createdRecipe.getId());
+                Assertions.assertNull(firstRecipe);
+            }, "Error to find not existing recipe");
         }, "Error to delete recipe by id");
     }
 }

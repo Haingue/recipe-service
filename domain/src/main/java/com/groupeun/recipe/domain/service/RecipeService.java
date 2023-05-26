@@ -105,7 +105,7 @@ public class RecipeService implements RecipeInputPort {
 
     @Override
     public void delete(UUID id) {
-        if (recipeOutputPort.findOne(id).isPresent()) throw new RecipeNotFound(id);
+        if (!recipeOutputPort.findOne(id).isPresent()) throw new RecipeNotFound(id);
         recipeOutputPort.delete(id);
     }
 }

@@ -27,6 +27,7 @@ public class RecipeStepOutputPortImplement implements RecipeStepOutputPort {
 
     @Override
     public Set<RecipeStep> findAllRecipeStepsByRecipe(UUID recipeId) {
+        if (!store.containsKey(recipeId)) store.put(recipeId, new HashSet<>());
         return store.get(recipeId);
     }
 

@@ -89,7 +89,7 @@ public class OutputUtils {
     public static Set<Ingredient> createIngredientList (int number) {
         Random random = new Random();
         return Stream.iterate(0, i -> i + 1).limit(number)
-                .map(v -> createIngredient(UUID.randomUUID(), random.nextInt(), createDetails(UUID.randomUUID(), generateString(5))))
+                .map(v -> createIngredient(UUID.randomUUID(), Math.abs(random.nextInt() % 10) + 1, createDetails(UUID.randomUUID(), generateString(5))))
                 .collect(Collectors.toSet());
     }
 
