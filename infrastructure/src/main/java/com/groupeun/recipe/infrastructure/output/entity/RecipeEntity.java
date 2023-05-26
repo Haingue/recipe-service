@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "recipe")
+@Table(name = "recipes")
 public class RecipeEntity {
 
     @Id

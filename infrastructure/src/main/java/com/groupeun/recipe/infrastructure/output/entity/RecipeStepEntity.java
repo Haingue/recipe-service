@@ -13,7 +13,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "recipe_step")
+@Table(name = "recipe_steps")
 public class RecipeStepEntity {
 
     @EmbeddedId
