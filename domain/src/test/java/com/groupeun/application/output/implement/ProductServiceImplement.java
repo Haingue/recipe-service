@@ -1,9 +1,7 @@
 package com.groupeun.application.output.implement;
 
 import com.groupeun.recipe.application.ports.output.ProductOutputPort;
-import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Product;
-import com.groupeun.recipe.domain.service.ProductService;
 
 import java.util.HashMap;
 import java.util.Set;

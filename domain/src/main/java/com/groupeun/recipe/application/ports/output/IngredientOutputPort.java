@@ -2,7 +2,6 @@ package com.groupeun.recipe.application.ports.output;
 
 import com.groupeun.recipe.domain.model.Ingredient;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 

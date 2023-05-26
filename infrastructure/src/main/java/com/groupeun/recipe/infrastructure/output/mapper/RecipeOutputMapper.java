@@ -1,13 +1,10 @@
 package com.groupeun.recipe.infrastructure.output.mapper;
 
-import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.infrastructure.output.entity.RecipeEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class RecipeOutputMapper {

@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.annotation.PostConstruct;
-
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;

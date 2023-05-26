@@ -1,12 +1,9 @@
 package com.groupeun.recipe.application.ports.output;
 
-import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
-import com.groupeun.recipe.domain.model.RecipeStep;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 public interface RecipeOutputPort {

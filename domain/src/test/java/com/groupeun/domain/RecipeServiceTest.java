@@ -1,26 +1,15 @@
 package com.groupeun.domain;
 
-import com.groupeun.application.output.implement.*;
-import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
-import com.groupeun.recipe.application.ports.output.RecipeOutputPort;
-import com.groupeun.recipe.application.ports.output.RecipeStepOutputPort;
-import com.groupeun.recipe.domain.exception.RecipeIdAlreadyUsed;
-import com.groupeun.recipe.domain.model.Ingredient;
-import com.groupeun.recipe.domain.model.Product;
+import com.groupeun.application.output.implement.IngredientOutputPortImplement;
+import com.groupeun.application.output.implement.OutputUtils;
+import com.groupeun.application.output.implement.RecipeOutputPortImplement;
+import com.groupeun.application.output.implement.RecipeStepOutputPortImplement;
 import com.groupeun.recipe.domain.model.Recipe;
-import com.groupeun.recipe.domain.model.RecipeStep;
-import com.groupeun.recipe.domain.service.IngredientService;
-import com.groupeun.recipe.domain.service.ProductService;
 import com.groupeun.recipe.domain.service.RecipeService;
-import com.groupeun.recipe.domain.service.RecipeStepService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 public class RecipeServiceTest {

@@ -1,7 +1,6 @@
 package com.groupeun.application.output.implement;
 
 import com.groupeun.recipe.application.ports.output.RecipeStepOutputPort;
-import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
 
 import java.util.HashMap;
