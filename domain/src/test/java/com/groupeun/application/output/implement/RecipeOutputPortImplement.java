@@ -4,6 +4,7 @@ import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
 import com.groupeun.recipe.application.ports.output.RecipeOutputPort;
 import com.groupeun.recipe.domain.exception.RecipeIdAlreadyUsed;
 import com.groupeun.recipe.domain.exception.RecipeNotFound;
+import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
 
@@ -12,19 +13,34 @@ import java.util.stream.Collectors;
 
 public class RecipeOutputPortImplement implements RecipeOutputPort {
 
-    private static RecipeOutputPortImplement instance = new RecipeOutputPortImplement();
+    private static final RecipeOutputPortImplement instance = new RecipeOutputPortImplement();
     private static HashMap<UUID, Recipe> store;
 
     private RecipeOutputPortImplement() {
         super();
-        this.store = new HashMap<>();
+        store = new HashMap<>();
     }
 
-    public static RecipeOutputPort getInstance () {
+    public static RecipeOutputPortImplement getInstance () {
         return RecipeOutputPortImplement.instance;
     }
     public static HashMap<UUID, Recipe> getStore () {
         return RecipeOutputPortImplement.store;
+    }
+
+    public static Recipe createRecipe(UUID id, String name, String description,
+                                      int preparationTime, double nutritionalScore, UUID authorId,
+                                      Set<RecipeStep> steps, Set<Ingredient> ingredients) {
+        Recipe recipe = new Recipe();
+        recipe.setId(id);
+        recipe.setName(name);
+        recipe.setDescription(description);
+        recipe.setPreparationTime(preparationTime);
+        recipe.setNutritionalScore(nutritionalScore);
+        recipe.setAuthorId(authorId);
+        recipe.setSteps(steps);
+        recipe.setIngredients(ingredients);
+        return recipe;
     }
 
     @Override

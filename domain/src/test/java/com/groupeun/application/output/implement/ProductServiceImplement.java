@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class ProductServiceImplement implements ProductOutputPort {
 
-    private static ProductServiceImplement instance = new ProductServiceImplement();
+    private static final ProductServiceImplement instance = new ProductServiceImplement();
     private static HashMap<UUID, Product> store;
 
     private ProductServiceImplement() {

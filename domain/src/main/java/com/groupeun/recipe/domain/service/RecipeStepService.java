@@ -14,10 +14,7 @@ import com.groupeun.recipe.domain.model.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -27,7 +24,9 @@ public class RecipeStepService {
     private RecipeStepOutputPort recipeStepOutputPort;
 
     public Set<RecipeStep> findAllRecipeStepsByRecipe (UUID recipeId) {
-        return recipeStepOutputPort.findAllRecipeStepsByRecipe(recipeId);
+        Set<RecipeStep> allRecipeStepsByRecipe = recipeStepOutputPort.findAllRecipeStepsByRecipe(recipeId);
+        if (allRecipeStepsByRecipe == null) return new HashSet<>();
+        return allRecipeStepsByRecipe;
     }
 
     public Set<RecipeStep> updateStepList (UUID recipeId, Set<RecipeStep> steps) {

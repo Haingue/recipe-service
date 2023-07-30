@@ -4,19 +4,18 @@ import com.groupeun.recipe.application.ports.output.RecipeStepOutputPort;
 import com.groupeun.recipe.domain.model.Recipe;
 import com.groupeun.recipe.domain.model.RecipeStep;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RecipeStepOutputPortImplement implements RecipeStepOutputPort {
 
-    private static RecipeStepOutputPortImplement instance = new RecipeStepOutputPortImplement();
+    private static final RecipeStepOutputPortImplement instance = new RecipeStepOutputPortImplement();
     private static HashMap<UUID, Set<RecipeStep>> store;
 
     private RecipeStepOutputPortImplement() {
         super();
-        this.store = new HashMap<>();
+        store = new HashMap<>();
     }
 
     public static RecipeStepOutputPort getInstance () {
@@ -26,9 +25,25 @@ public class RecipeStepOutputPortImplement implements RecipeStepOutputPort {
         return RecipeStepOutputPortImplement.store;
     }
 
+    public static Set<RecipeStep> createRecipeStepList (int number) {
+        Random random = new Random();
+        return Stream.iterate(0, i -> i + 1).limit(number)
+                .map(v -> createRecipeStep(random.nextInt(), OutputUtils.generateString(5)))
+                .collect(Collectors.toSet());
+    }
+
+    public static RecipeStep createRecipeStep (int stepNumber, String description) {
+        RecipeStep recipeStep = new RecipeStep();
+        recipeStep.setStepNumber(stepNumber);
+        recipeStep.setDescription(description);
+        return recipeStep;
+    }
+
     @Override
     public Set<RecipeStep> findAllRecipeStepsByRecipe(UUID recipeId) {
-        return store.get(recipeId);
+        Set<RecipeStep> recipeSteps = store.get(recipeId);
+        if (recipeSteps == null) return new HashSet<>();
+        return recipeSteps;
     }
 
     @Override
@@ -43,7 +58,7 @@ public class RecipeStepOutputPortImplement implements RecipeStepOutputPort {
     @Override
     public void delete(UUID recipeId, int stepNumber) {
         if (store.containsKey(recipeId)) store.put(recipeId, new HashSet<>());
-            store.get(recipeId).remove(generateRecipeStep(recipeId, stepNumber, null));
+        store.get(recipeId).remove(generateRecipeStep(recipeId, stepNumber, null));
     }
 
     private RecipeStep generateRecipeStep (UUID recipeId, int stepNumber, String description) {

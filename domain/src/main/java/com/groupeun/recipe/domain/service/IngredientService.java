@@ -1,12 +1,14 @@
 package com.groupeun.recipe.domain.service;
 
 import com.groupeun.recipe.application.ports.output.IngredientOutputPort;
+import com.groupeun.recipe.domain.exception.IngredientNotValid;
 import com.groupeun.recipe.domain.exception.IngredientsNotExist;
 import com.groupeun.recipe.domain.model.Ingredient;
 import com.groupeun.recipe.domain.model.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -20,7 +22,9 @@ public class IngredientService {
     private IngredientOutputPort ingredientOutputPort;
 
     public Set<Ingredient> findAllIngredientByRecipeId (UUID recipeId) {
-        return ingredientOutputPort.findAllProductByRecipe(recipeId);
+        Set<Ingredient> allProductByRecipe = ingredientOutputPort.findAllProductByRecipe(recipeId);
+        if (allProductByRecipe == null) return new HashSet<>();
+        return allProductByRecipe;
     }
 
     public Set<Ingredient> updateIngredientList(UUID recipeId, Set<Ingredient> ingredients) {
@@ -31,20 +35,24 @@ public class IngredientService {
         }
 
         Set<Ingredient> existingIngredient = this.findAllIngredientByRecipeId(recipeId);
-        for (Ingredient ingredient : ingredients) {
-            existingIngredient.remove(ingredient);
-            ingredientOutputPort.save(recipeId, ingredient.getId(), ingredient.getQuantity());
+        if (existingIngredient.isEmpty()) {
+            for (Ingredient ingredient : ingredients) {
+                existingIngredient.remove(ingredient);
+                ingredientOutputPort.save(recipeId, ingredient.getId(), ingredient.getQuantity());
+            }
         }
         existingIngredient.forEach(oldIngredient -> ingredientOutputPort.delete(recipeId, oldIngredient.getId()));
         return ingredients;
     }
 
     public boolean ingredientIsValid (Ingredient ingredient) {
-        return ingredient.getId() != null && ingredient.getQuantity() > 0;
+        if (ingredient.getId() == null) throw new IngredientNotValid("id", null);
+        if (ingredient.getQuantity() < 1) throw new IngredientNotValid("quantity", ingredient.getQuantity());
+        return true;
     }
 
     public boolean ingredientsAreValid (Set<Ingredient> ingredients) {
         Predicate<Ingredient> ingredientIsValid = this::ingredientIsValid;
-        return !ingredients.stream().anyMatch(ingredientIsValid.negate());
+        return ingredients.stream().noneMatch(ingredientIsValid.negate());
     }
 }

@@ -40,9 +40,9 @@ public class OutputUtils {
     public static void initializeOutputPortImplement () {
         Random random = new Random();
         for (int i = 0; i < 3; i++) {
-            Set<RecipeStep> steps = createRecipeStepList(4);
-            Set<Ingredient> ingredients = createIngredientList(3);
-            Recipe recipe = createRecipe(
+            Set<RecipeStep> steps = RecipeStepOutputPortImplement.createRecipeStepList(4);
+            Set<Ingredient> ingredients = IngredientOutputPortImplement.createIngredientList(3);
+            Recipe recipe = RecipeOutputPortImplement.createRecipe(
                     UUID.randomUUID(),
                     generateString(7),
                     generateString(150),
@@ -56,57 +56,6 @@ public class OutputUtils {
             IngredientOutputPortImplement.getStore().put(recipe.getId(), ingredients);
             RecipeOutputPortImplement.getStore().put(recipe.getId(), recipe);
         }
-    }
-
-    public static Recipe createRecipe(UUID id, String name, String description,
-                                      int preparationTime, double nutritionalScore, UUID authorId,
-                                      Set<RecipeStep> steps, Set<Ingredient> ingredients) {
-        Recipe recipe = new Recipe();
-        recipe.setId(id);
-        recipe.setName(name);
-        recipe.setDescription(description);
-        recipe.setPreparationTime(preparationTime);
-        recipe.setNutritionalScore(nutritionalScore);
-        recipe.setAuthorId(authorId);
-        recipe.setSteps(steps);
-        recipe.setIngredients(ingredients);
-        return recipe;
-    }
-
-    public static Set<RecipeStep> createRecipeStepList (int number) {
-        Random random = new Random();
-        return Stream.iterate(0, i -> i + 1).limit(number)
-                .map(v -> createRecipeStep(random.nextInt(), generateString(5)))
-                .collect(Collectors.toSet());
-    }
-
-    public static RecipeStep createRecipeStep (int stepNumber, String description) {
-        RecipeStep recipeStep = new RecipeStep();
-        recipeStep.setStepNumber(stepNumber);
-        recipeStep.setDescription(description);
-        return recipeStep;
-    }
-
-    public static Set<Ingredient> createIngredientList (int number) {
-        Random random = new Random();
-        return Stream.iterate(0, i -> i + 1).limit(number)
-                .map(v -> createIngredient(UUID.randomUUID(), random.nextInt(), createDetails(UUID.randomUUID(), generateString(5))))
-                .collect(Collectors.toSet());
-    }
-
-    public static Ingredient createIngredient (UUID id, int quantity, Product details) {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setId(id);
-        ingredient.setQuantity(quantity);
-        ingredient.setDetails(details);
-        return ingredient;
-    }
-
-    public static Product createDetails (UUID id, String name) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        return product;
     }
 
     public static String generateString (int length) {
